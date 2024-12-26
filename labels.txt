@@ -1,0 +1,2 @@
+0 Despierto
+1 Dormido
