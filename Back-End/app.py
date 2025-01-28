@@ -8,7 +8,8 @@ import threading
 app = Flask(__name__)
 
 # Cargar el modelo de predicción
-model = load_model('keras_model1.h5')
+model = load_model('keras_model.h5')
+
 
 # Cargar el clasificador de ojos
 eyeLeft = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_lefteye_2splits.xml')
