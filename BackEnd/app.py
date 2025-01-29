@@ -7,21 +7,16 @@ import threading
 
 app = Flask(__name__)
 
-# Cargar el modelo de predicción
-model = load_model('modeloMejorado.h5')
+# Cargar el modelo de predicción CAMBIO DE RUTA PARA EJECUTAR EN LOCAL WILMER
+model = load_model(r"C:\Users\gueva\DeteccionSue-o-main\DeteccionSue-o-main\keras_model1.h5")
+
 
 # Cargar el clasificador de ojos
-eyeLeft = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
-eyeRight = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
+eyeLeft = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_lefteye_2splits.xml')
+eyeRight = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_righteye_2splits.xml')
 
 # Configuración del video
-video_capture = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # Usando DirectShow en Windows
-if not video_capture.isOpened():
-    print("Error al acceder a la cámara.")
-    exit()
-
-
-
+video_capture = cv2.VideoCapture(0)
 p = vlc.MediaPlayer("wakeup.mp3")
 
 # Variables de contador
@@ -29,10 +24,8 @@ contador = 0
 data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
 
 # Configurar la resolución de la cámara
-video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 320)  # Ancho de 320 píxeles
-video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)  # Alto de 240 píxeles
-
-
+video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  # Ancho de 640 píxeles
+video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)  # Alto de 480 píxeles
 
 def predict_sleep(frame, height, width):
     """Realiza la predicción de sueño solo cuando sea necesario."""
@@ -84,33 +77,30 @@ def predict_sleep(frame, height, width):
 
     return None
 
-frame_counter = 0  # Variable global para contar los fotogramas
-
 def generate_frames():
-    global contador, frame_counter
+    global contador
     while True:
         ret, frame = video_capture.read()
         if not ret:
             break
 
-        # Realizar predicción solo cada 5 fotogramas
-        if frame_counter % 5 == 0:
-            height, width = frame.shape[:2]
-            state = predict_sleep(frame, height, width)
-            # Control de reproductor de audio
-            if state == 1:
-                contador += 1
-                if contador >= 15:
-                    contador = 15
-                    if not p.is_playing():
-                        p.play()
-            elif state == 0:
-                contador -= 1
-                if contador <= 0:
-                    contador = 0
-                    p.stop()
+        height, width = frame.shape[:2]
 
-        frame_counter += 1
+        # Predicción de sueño
+        state = predict_sleep(frame, height, width)
+
+        # Controlar el reproductor de audio basado en la predicción
+        if state == 1:
+            contador += 1
+            if contador >= 15:
+                contador = 15
+                if not p.is_playing():
+                    p.play()
+        elif state == 0:
+            contador -= 1
+            if contador <= 0:
+                contador = 0
+                p.stop()
 
         # Convertir la imagen a formato adecuado para enviar al navegador
         ret, buffer = cv2.imencode('.jpg', frame)
@@ -118,20 +108,6 @@ def generate_frames():
 
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-
-# Hilo para la captura de video
-def capture_video():
-    while True:
-        ret, frame = video_capture.read()
-        if not ret:
-            break
-        # Procesar el frame (redimensionado o predicción) aquí si es necesario
-        cv2.waitKey(1)  # Esperar para mejorar el rendimiento
-
-capture_thread = threading.Thread(target=capture_video)
-capture_thread.daemon = True
-capture_thread.start()
-
 
 @app.route('/')
 def index():
