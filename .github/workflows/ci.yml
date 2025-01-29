@@ -19,7 +19,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.9'  # Define la versión de Python que deseas usar
+        python-version: '3.9'  
 
     - name: Install dependencies
       run: |
@@ -30,8 +30,3 @@ jobs:
       run: |
         python -m unittest discover  # Usa unittest para descubrir y ejecutar las pruebas
 
-    - name: Deploy to Heroku (opcional)
-      run: |
-        heroku login
-        git remote add heroku https://git.heroku.com/<your-app>.git
-        git push heroku main  # Si deseas desplegar en Heroku, configura Heroku CLI
