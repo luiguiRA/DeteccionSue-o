@@ -1,0 +1,37 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Se ejecutará cuando haya un push a la rama 'main'
+  pull_request:
+    branches:
+      - main  # También se ejecutará cuando haya un PR hacia la rama 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'  # Define la versión de Python que deseas usar
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt  # Asegúrate de tener un requirements.txt
+
+    - name: Run tests
+      run: |
+        python -m unittest discover  # Usa unittest para descubrir y ejecutar las pruebas
+
+    - name: Deploy to Heroku (opcional)
+      run: |
+        heroku login
+        git remote add heroku https://git.heroku.com/<your-app>.git
+        git push heroku main  # Si deseas desplegar en Heroku, configura Heroku CLI
