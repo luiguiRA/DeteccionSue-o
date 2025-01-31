@@ -16,6 +16,8 @@ eyeRight = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_righteye_2
 # Configuración del video
 video_capture = cv2.VideoCapture(0)
 music = vlc.MediaPlayer("wakeup.mp3")
+if not music:
+    print("Error: No se pudo cargar el archivo wakeup.mp3")
 
 # Variables de contador
 contador = 0
@@ -87,23 +89,28 @@ def generate_frames():
         # Predicción de sueño
         state = predict_sleep(frame, height, width)
 
-        # Controlar el reproductor de audio basado en la predicción
         if state == 1:
             contador += 1
-            if contador >= 15:
-                contador = 15
+            if contador >= 1:
+                contador = 1
                 if not music.is_playing():
+                    print("Reproduciendo música")
                     music.play()
+                else:
+                    print("La música ya está reproduciéndose")
         elif state == 0:
             contador -= 1
             if contador <= 0:
                 contador = 0
-                music.stop()
+                if music.is_playing():
+                    print("Deteniendo música")
+                    music.stop()
+                else:
+                    print("La música ya está detenida")
 
         # Convertir la imagen a formato adecuado para enviar al navegador
         ret, buffer = cv2.imencode('.jpg', frame)
         frame = buffer.tobytes()
-
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
