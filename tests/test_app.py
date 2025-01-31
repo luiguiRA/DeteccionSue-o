@@ -15,7 +15,7 @@ class FlaskAppTestCase(unittest.TestCase):
     def test_home(self):
         response = self.app.get('/')
         self.assertEqual(response.status_code, 200)
-        self.assertIn('Detección de Sueño en Tiempo Real', response.data.decode('utf-8'))  # Usa cadena normal y decodifica la respuesta
+        self.assertIn('Detección de Sueño', response.data.decode('utf-8'))
 
 if __name__ == '__main__':
     unittest.main()

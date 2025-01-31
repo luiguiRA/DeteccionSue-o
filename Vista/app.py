@@ -3,12 +3,11 @@ import numpy as np
 from flask import Flask, render_template, Response
 from tensorflow.keras.models import load_model
 import vlc
-import threading
 
 app = Flask(__name__)
 
+#model = load_model("Vista/keras_model.h5")
 model = load_model("keras_model.h5")
-
 
 # Cargar el clasificador de ojos
 eyeLeft = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_lefteye_2splits.xml')
