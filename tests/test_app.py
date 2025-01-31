@@ -3,7 +3,7 @@ import os
 import unittest 
 
 # Asegura que el directorio raíz esté en el path para importar 'app.py'
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'BackEnd')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'Vista')))
 
 from app import app  # Importa tu aplicación Flask
 

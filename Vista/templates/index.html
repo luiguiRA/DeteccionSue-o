@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+    <title>Detección de Sueño - IA</title>
+    
+</head>
+<body>
+
+    <h1>🚗 Detección de Sueño con IA</h1>
+
+    <div class="container">
+        <img id="video-feed" src="{{ url_for('video') }}" alt="Video en vivo">
+        <div id="status" class="status">🔵 Estado: Analizando...</div>
+
+        <button class="btn connect-btn" onclick="connectToCar()">🔗 Conectar al Automóvil</button>
+        <button class="btn alarm-btn" onclick="activateAlarm()">🚨 Activar Alarma</button>
+    </div>
+
+    <!-- Pantalla de advertencia -->
+    <div id="warning-screen" class="warning-screen">
+        🚨 ¡PELIGRO! TE ESTÁS DURMIENDO 🚨
+        <button onclick="closeWarning()">OK</button>
+    </div>
+
+    
+<script src="js/script.js"></script>
+</body>
+
+</html>
