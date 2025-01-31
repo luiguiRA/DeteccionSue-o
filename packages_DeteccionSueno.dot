@@ -1,0 +1,7 @@
+digraph "packages_DeteccionSueno" {
+rankdir=BT
+charset="utf-8"
+"BackEnd" [color="black", label=<BackEnd>, shape="box", style="solid"];
+"BackEnd.app" [color="black", label=<BackEnd.app>, shape="box", style="solid"];
+"modelo" [color="black", label=<modelo>, shape="box", style="solid"];
+}
